@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathLand 🚀 | Kids Interactive Math Adventure</title>
+  <meta name="description" content="An interactive math tutorial game for kids to master Addition, Subtraction, Multiplication, and Division with fun sound effects, difficulty levels, and visual hints!">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts for rounded, cute typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Cosmic Background Canvas for stars & particles -->
+  <canvas id="cosmic-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    
+    <!-- Left Sidebar: Operator Selector -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <h1>MathLand <span class="logo-emoji">🚀</span></h1>
+        <p class="subtitle">Cosmic Adventure</p>
+      </div>
+
+      <nav class="operator-nav">
+        <h2>Choose Your Mission:</h2>
+        <button id="op-add" class="op-btn active" data-operator="addition" aria-label="Addition Mission">
+          <span class="op-icon">➕</span>
+          <span class="op-text">Addition</span>
+        </button>
+        <button id="op-sub" class="op-btn" data-operator="subtraction" aria-label="Subtraction Mission">
+          <span class="op-icon">➖</span>
+          <span class="op-text">Subtraction</span>
+        </button>
+        <button id="op-mul" class="op-btn" data-operator="multiplication" aria-label="Multiplication Mission">
+          <span class="op-icon">✖️</span>
+          <span class="op-text">Multiplication</span>
+        </button>
+        <button id="op-div" class="op-btn" data-operator="division" aria-label="Division Mission">
+          <span class="op-icon">➗</span>
+          <span class="op-text">Division</span>
+        </button>
+        <button id="op-rnd" class="op-btn" data-operator="random" aria-label="Random Mixed Mission">
+          <span class="op-icon">🎲</span>
+          <span class="op-text">Mixed Quiz</span>
+        </button>
+      </nav>
+
+      <!-- Quick How to Play card -->
+      <div class="info-card">
+        <h3>How to Play:</h3>
+        <ol>
+          <li>Pick an operation.</li>
+          <li>Choose difficulty.</li>
+          <li>Solve & check your answer!</li>
+        </ol>
+      </div>
+    </aside>
+
+    <!-- Main Gameboard Area -->
+    <main class="gameboard">
+      
+      <!-- Top Stats & Configuration Bar -->
+      <header class="top-bar">
+        <!-- Stats Dashboard -->
+        <div class="stats-dashboard">
+          <div class="stat-card" id="stat-score-card">
+            <span class="stat-label">Stars</span>
+            <span class="stat-val" id="score-val">⭐ 0</span>
+          </div>
+          <div class="stat-card" id="stat-streak-card">
+            <span class="stat-label">Streak</span>
+            <span class="stat-val" id="streak-val">🔥 0</span>
+          </div>
+          <div class="stat-card" id="stat-best-card">
+            <span class="stat-label">Best Streak</span>
+            <span class="stat-val" id="best-streak-val">🏆 0</span>
+          </div>
+          <div class="stat-card" id="stat-level-card">
+            <span class="stat-label">Rank</span>
+            <span class="stat-val" id="level-val">👑 Novice</span>
+          </div>
+        </div>
+
+        <!-- Mode Toggles -->
+        <div class="toggles-panel">
+          <button id="toggle-sound" class="toggle-btn active" aria-label="Toggle Sound">
+            <span class="btn-icon">🔊</span>
+            <span class="btn-text">Sound ON</span>
+          </button>
+          <button id="toggle-timer" class="toggle-btn" aria-label="Toggle Timer">
+            <span class="btn-icon">⏱️</span>
+            <span class="btn-text">Timer OFF</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Activity Arena -->
+      <section class="activity-card">
+        
+        <!-- Tab Control for Difficulty -->
+        <div class="difficulty-tabs">
+          <button class="diff-tab active" data-difficulty="easy" id="diff-easy">
+            🌱 Easy <span class="diff-range">(0-10)</span>
+          </button>
+          <button class="diff-tab" data-difficulty="medium" id="diff-medium">
+            🚀 Medium <span class="diff-range">(0-20)</span>
+          </button>
+          <button class="diff-tab" data-difficulty="hard" id="diff-hard">
+            🧙 Hard <span class="diff-range">(0-100)</span>
+          </button>
+        </div>
+
+        <!-- Timer progress container (hidden if timer is off) -->
+        <div class="timer-container" id="timer-bar-container" style="display: none;">
+          <div class="timer-bar" id="timer-progress"></div>
+          <div class="timer-text" id="timer-display">20s</div>
+        </div>
+
+        <!-- Level Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-label">Next Rank Progress:</div>
+          <div class="progress-track">
+            <div class="progress-bar" id="rank-progress"></div>
+          </div>
+        </div>
+
+        <!-- Active Question Panel -->
+        <div class="question-panel" id="question-board">
+          <div class="equation-container">
+            <div class="num-card" id="num-1">0</div>
+            <div class="operator-display" id="active-op">+</div>
+            <div class="num-card" id="num-2">0</div>
+            <div class="equals-display">=</div>
+            
+            <div class="answer-wrapper">
+              <input type="number" id="answer-input" placeholder="?" min="0" autocomplete="off" aria-label="Your Answer">
+              <button id="btn-check" class="check-btn" aria-label="Check Answer">✔️</button>
+            </div>
+          </div>
+
+          <!-- Message Alert Display (for Correct / Wrong answers) -->
+          <div class="alert-message" id="alert-msg">Ready to start? Click Generate!</div>
+        </div>
+
+        <!-- Lower Controls Panel -->
+        <div class="controls-panel">
+          <button id="btn-generate" class="action-btn generate-btn pulse-btn" aria-label="Generate New Problem">
+            🚀 Generate
+          </button>
+        </div>
+
+      </section>
+
+
+
+    </main>
+  </div>
+
+  <!-- JavaScript logic file -->
+  <script src="app.js"></script>
+</body>
+</html>
